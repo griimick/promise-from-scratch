@@ -1,0 +1,14 @@
+{
+  "name": "promise-from-scratch",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/griimick/promise-from-scratch.git",
+  "author": "Soumik Pradhan",
+  "license": "MIT",
+  "scripts": {
+	"test": "promises-aplus-tests ./test/adapter.js"
+  },
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
