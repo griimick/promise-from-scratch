@@ -26,25 +26,38 @@ function MockPromsie(fn) {
 	const fulfill = (result) => {
 		status = STATUS.fulfilled;
 		value = result;
-		// call onFulfilled for all attached handlers
-		handlers.forEach(h => h.onFulfill(value));
+
+		// call onFulfill on next tick
+		setTimeout(() => {
+			// call onFulfilled for all attached handlers
+			handlers.forEach(h => h.onFulfill(value));
+		}, 0);
 	};
 
 	// pending -> rejected: state transition fn
 	const reject = (error) => {
 		status = STATUS.rejected;
 		value = error;
-		// call onRejected for all attached handlers
-		handlers.forEach(h => h.onReject(value));
+
+		// call onReject on next tick
+		setTimeout(() => {
+			// call onRejected for all attached handlers
+			handlers.forEach(h => h.onReject(value));
+		}, 0);
 	};
 
 	// Call the param fn as soon as MockPromise constructor is called
 	const process = (fn) => {
-		// promise can be resolved on once 
+		// promise can be resolved/rejected once 
+		// so need to maintain if process has been called or not
 		let called = false;
 		try {
 			fn(
 				result => {
+					// promise cannot resolve using itself as the value
+					if (result === this)
+						throw new TypeError();
+
 					if(called) return;
 					called = true;
 
@@ -65,6 +78,10 @@ function MockPromsie(fn) {
 					fulfill(result);
 				},
 				error => {
+					// promise cannot reject using itself as the error
+					if (error === this)
+						throw new TypeError();
+
 					if(called) return;
 					called = true;
 					reject(error);
@@ -88,7 +105,7 @@ function MockPromsie(fn) {
 
 	// onFulfill and onReject are optional parameters in `then` 
 	this.then = (onFulfill, onReject) => {
-		return new MockPromsie((resolve/*, reject */) => {
+		return new MockPromsie((resolve, reject) => {
 			handle(
 				result => {
 					if(isFunction(onFulfill)) {
@@ -111,8 +128,8 @@ function MockPromsie(fn) {
 }
 
 // Promise.resolve(2)
-MockPromsie.resolved = (value) => new MockPromsie((res) => res(value));
+MockPromsie.resolve = (value) => new MockPromsie((res) => res(value));
 // Promise.reject(new Error('dummy'))
-MockPromsie.rejected = (value) => new MockPromsie((_, rej) => rej(value));
+MockPromsie.reject = (value) => new MockPromsie((_, rej) => rej(value));
 
 module.exports = MockPromsie;
