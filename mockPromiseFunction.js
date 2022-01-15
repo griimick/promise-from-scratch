@@ -1,3 +1,5 @@
+const {nextTick} = require("process");
+
 const STATUS = {
 	pending   : 0,
 	fulfilled : 1,
@@ -28,7 +30,7 @@ function MockPromise(fn) {
 		value = result;
 
 		// call onFulfill on next tick
-		setTimeout(() => {
+		nextTick(() => {
 			// call onFulfilled for all attached handlers
 			handlers.forEach(h => h.onFulfill(value));
 		}, 0);
@@ -40,7 +42,7 @@ function MockPromise(fn) {
 		value = error;
 
 		// call onReject on next tick
-		setTimeout(() => {
+		nextTick(() => {
 			// call onRejected for all attached handlers
 			handlers.forEach(h => h.onReject(value));
 		}, 0);
@@ -96,7 +98,7 @@ function MockPromise(fn) {
 	};
 
 	function handle(onFulfill, onReject) {
-		setTimeout(() => {
+		nextTick(() => {
 			if(status === STATUS.pending) handlers.push({ onFulfill, onReject });
 			if(status === STATUS.fulfilled) onFulfill(value);
 			if(status === STATUS.rejected) onReject(value);
