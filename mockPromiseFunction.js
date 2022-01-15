@@ -6,12 +6,12 @@ const STATUS = {
 Object.freeze = STATUS;
 
 const getThen = value => {
-	if (value && typeof value.then === 'function') {
+	if (value && typeof value.then === "function") {
 		return value.then;
 	}
-}
+};
 
-const isFunction = (fn) => typeof fn === 'function';
+const isFunction = (fn) => typeof fn === "function";
 
 function MockPromsie(fn) {
 	let status = STATUS.pending;
@@ -22,13 +22,13 @@ function MockPromsie(fn) {
 		status = STATUS.fulfilled;
 		value = result;
 		handlers.forEach(h => h.onFulfill(value));
-	}
+	};
 
 	const reject = (error) => {
 		status = STATUS.rejected;
 		value = error;
 		handlers.forEach(h => h.onReject(value));
-	}
+	};
 
 	const process = (fn) => {
 		fn(
@@ -41,17 +41,17 @@ function MockPromsie(fn) {
 				fulfill(result);
 			},
 			error => reject(error)
-		)
-	}
+		);
+	};
 
 	const handle = (onFulfill, onReject) => {
 		if(status === STATUS.pending) handlers.push({ onFulfill, onReject });
 		if(status === STATUS.fulfilled) onFulfill(value);
 		if(status === STATUS.rejected) onReject(value);
-	}
+	};
 
 	this.then = (onFulfill, onReject) => {
-		return new MockPromsie((resolve, reject) => {
+		return new MockPromsie((resolve/*, reject */) => {
 			handle(
 				result => {
 					if(isFunction(onFulfill)) {
@@ -68,7 +68,7 @@ function MockPromsie(fn) {
 				}
 			);
 		});
-	}
+	};
 	process(fn);
 }
 
