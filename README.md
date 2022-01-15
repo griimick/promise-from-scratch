@@ -30,10 +30,10 @@ Covers all the test cases from promises-aplus draft test suite
 npm run test
 ```
 ### TODO
-- [ ] MockPromise.all()
-- [ ] MockPromise.any()
-- [ ] MockPromise.allSetlled()
-- [ ] MockPromise.race()
+- [ ] `MockPromise.all()`
+- [ ] `MockPromise.any()`
+- [ ] `MockPromise.allSetlled()`
+- [ ] `MockPromise.race()`
 
 ### References
 - Spec: https://promisesaplus.com/
