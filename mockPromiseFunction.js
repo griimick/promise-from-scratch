@@ -136,18 +136,17 @@ function MockPromise(fn) {
 	};
 
 	this.catch = (onReject) => {
-		this.then(void 0, onReject);
+		return this.then(void 0, onReject);
 	};
 
 	this.finally = (onFinally) => {
 		if(isFunction(onFinally)) {
-			this.then(
+			return this.then(
 				(result) => MockPromise.resolve(onFinally()).then(() => { return result; }),
 				(error) => MockPromise.resolve(onFinally()).then(() => { throw error; }),
 			);
-			return;
 		}
-		this.then(onFinally, onFinally);
+		return this.then(onFinally, onFinally);
 	};
 	process(fn);
 }
