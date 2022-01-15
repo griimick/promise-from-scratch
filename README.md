@@ -36,5 +36,6 @@ npm run test
 - [ ] `MockPromise.race()`
 
 ### References
+![image](https://user-images.githubusercontent.com/10350864/149624380-d5e1b22d-adb8-4fb9-b7dd-fe6c9f49ca8b.png)
 - Spec: https://promisesaplus.com/
 - Test Cases: https://github.com/promises-aplus/promises-tests#readme
