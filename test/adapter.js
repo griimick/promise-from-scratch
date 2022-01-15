@@ -1,4 +1,4 @@
-const MockPromise = require("..");
+const MockPromise = require("../mockPromiseFunction");
 
 // In order to test your promise library, a very minimal adapter interface
 // is to be exposed to promises-test
