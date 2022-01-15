@@ -11,6 +11,8 @@ const getThen = value => {
 	}
 }
 
+const isFunction = (fn) => typeof fn === 'function';
+
 function MockPromsie(fn) {
 	let status = STATUS.pending;
 	let value;
@@ -51,12 +53,22 @@ function MockPromsie(fn) {
 	this.then = (onFulfill, onReject) => {
 		return new MockPromsie((resolve, reject) => {
 			handle(
-				result => resolve(onFulfill(result)),
-				error => resolve(onReject(error)) // TODO: handle reject
+				result => {
+					if(isFunction(onFulfill)) {
+						resolve(onFulfill(result));
+						return;
+					}
+					resolve(result);
+				},
+				error => {
+					if(isFunction(onReject)) {
+						resolve(onReject(error));
+					}
+					resolve(error);
+				}
 			);
 		});
 	}
-
 	process(fn);
 }
 
