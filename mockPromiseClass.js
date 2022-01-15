@@ -28,7 +28,7 @@ class MockPromise {
 				this.fulfill(result);
 			},
 			error => this.reject(error),
-		)
+		);
 	}
 
 	handle(onFulfilled, onRejected) {
@@ -59,12 +59,12 @@ const STATUS = {
 	pending: 1,
 	fulfilled: 2,
 	rejected: 3,
-}
+};
 Object.freeze(STATUS);
 MockPromise.STATUS = STATUS;
 
 function getThen(value) {
-	if (value && typeof value === 'function') {
+	if (value && typeof value === "function") {
 		return value.then;
 	}
 }
