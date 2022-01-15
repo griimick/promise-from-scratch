@@ -17,7 +17,7 @@ const getThen = value => {
 
 const isFunction = (fn) => typeof fn === "function";
 
-function MockPromsie(fn) {
+function MockPromise(fn) {
 	let status = STATUS.pending;
 	let value;
 	let handlers = [];
@@ -105,7 +105,7 @@ function MockPromsie(fn) {
 
 	// onFulfill and onReject are optional parameters in `then` 
 	this.then = (onFulfill, onReject) => {
-		return new MockPromsie((resolve, reject) => {
+		return new MockPromise((resolve, reject) => {
 			handle(
 				result => {
 					if(isFunction(onFulfill)) {
@@ -134,12 +134,27 @@ function MockPromsie(fn) {
 			);
 		});
 	};
+
+	this.catch = (onReject) => {
+		this.then(void 0, onReject);
+	};
+
+	this.finally = (onFinally) => {
+		if(isFunction(onFinally)) {
+			this.then(
+				(result) => MockPromise.resolve(onFinally()).then(() => { return result; }),
+				(error) => MockPromise.resolve(onFinally()).then(() => { throw error; }),
+			);
+			return;
+		}
+		this.then(onFinally, onFinally);
+	};
 	process(fn);
 }
 
 // Promise.resolve(2)
-MockPromsie.resolve = (value) => new MockPromsie((res) => res(value));
+MockPromise.resolve = (value) => new MockPromise((res) => res(value));
 // Promise.reject(new Error('dummy'))
-MockPromsie.reject = (value) => new MockPromsie((_, rej) => rej(value));
+MockPromise.reject = (value) => new MockPromise((_, rej) => rej(value));
 
-module.exports = MockPromsie;
+module.exports = MockPromise;
