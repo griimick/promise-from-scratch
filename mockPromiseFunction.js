@@ -6,8 +6,12 @@ const STATUS = {
 Object.freeze = STATUS;
 
 const getThen = value => {
-	if (value && typeof value.then === "function") {
-		return value.then;
+	const type = typeof value;
+	if(value && type === "object"|| type == "function") {
+		const then = value.then;
+		if (typeof then === "function") {
+			return then;
+		}
 	}
 };
 
@@ -36,25 +40,50 @@ function MockPromsie(fn) {
 
 	// Call the param fn as soon as MockPromise constructor is called
 	const process = (fn) => {
-		fn(
-			result => {
-				// if result is a MockPromise itself
-				// we are checking if result has .then function
-				const then = getThen(result);
-				if (then) {
-					process(then);
-					return;
+		// promise can be resolved on once 
+		let called = false;
+		try {
+			fn(
+				result => {
+					if(called) return;
+					called = true;
+
+					try {
+					// if result is a MockPromise itself
+						// we are checking if result has .then function
+						const then = getThen(result);
+						if (then) {
+							process(then.bind(result));
+							return;
+						}
+					}
+					catch(err) {
+						reject(err);
+						return;
+					}
+
+					fulfill(result);
+				},
+				error => {
+					if(called) return;
+					called = true;
+					reject(error);
 				}
-				fulfill(result);
-			},
-			error => reject(error)
-		);
+			);
+		}
+		catch(err){
+			if(called) return;
+			called = true;
+			reject(err);
+		}
 	};
 
 	function handle(onFulfill, onReject) {
-		if(status === STATUS.pending) handlers.push({ onFulfill, onReject });
-		if(status === STATUS.fulfilled) onFulfill(value);
-		if(status === STATUS.rejected) onReject(value);
+		setTimeout(() => {
+			if(status === STATUS.pending) handlers.push({ onFulfill, onReject });
+			if(status === STATUS.fulfilled) onFulfill(value);
+			if(status === STATUS.rejected) onReject(value);
+		}, 0);
 	}
 
 	// onFulfill and onReject are optional parameters in `then` 
