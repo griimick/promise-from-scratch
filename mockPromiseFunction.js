@@ -51,8 +51,8 @@ function MockPromsie(fn) {
 	this.then = (onFulfill, onReject) => {
 		return new MockPromsie((resolve, reject) => {
 			handle(
-				result => onFulfill(result),
-				error => onReject(error)
+				result => resolve(onFulfill(result)),
+				error => resolve(onReject(error)) // TODO: handle reject
 			);
 		});
 	}
