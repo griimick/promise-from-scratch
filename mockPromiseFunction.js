@@ -109,14 +109,24 @@ function MockPromsie(fn) {
 			handle(
 				result => {
 					if(isFunction(onFulfill)) {
-						resolve(onFulfill(result));
+						try{
+							resolve(onFulfill(result));
+						}
+						catch(error){
+							reject(error);
+						}
 						return;
 					}
 					resolve(result);
 				},
 				error => {
 					if(isFunction(onReject)) {
-						resolve(onReject(error));
+						try {
+							resolve(onReject(error));
+						}
+						catch(error){
+							reject(error);
+						}
 						return;
 					}
 					reject(error);
