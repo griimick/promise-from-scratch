@@ -63,8 +63,9 @@ function MockPromsie(fn) {
 				error => {
 					if(isFunction(onReject)) {
 						resolve(onReject(error));
+						return;
 					}
-					resolve(error);
+					reject(error);
 				}
 			);
 		});
